@@ -1,0 +1,10 @@
+services:
+  sandbox-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - SHELL_TIMEOUT_SEC=120
+    # Run as root so sudo in shell commands works
+    user: root

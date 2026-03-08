@@ -1,0 +1,20 @@
+# Stage 1: build Go binary
+FROM golang:1.22-bookworm AS builder
+WORKDIR /app
+COPY go.mod ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /sandbox-api ./cmd/server
+
+# Stage 2: Ubuntu runtime (for apt-get and package management)
+FROM ubuntu:24.04
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /sandbox-api /usr/local/bin/sandbox-api
+EXPOSE 8000
+# Run as root so sudo in shell commands works
+USER root
+ENTRYPOINT ["/usr/local/bin/sandbox-api"]
+# Default port (override with PORT env)
+ENV PORT=8000
