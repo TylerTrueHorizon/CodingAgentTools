@@ -7,5 +7,3 @@ services:
       - PORT=8000
       - SHELL_TIMEOUT_SEC=120
       - API_KEY=${API_KEY}
-    # Run as root so sudo in shell commands works
-    user: root
