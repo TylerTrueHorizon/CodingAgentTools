@@ -10,6 +10,7 @@ type Config struct {
 	Port            int
 	ShellTimeoutSec int
 	MaxRequestBody  int64
+	APIKey          string
 }
 
 // Load reads config from env with defaults.
@@ -34,5 +35,6 @@ func Load() Config {
 			c.MaxRequestBody = v
 		}
 	}
+	c.APIKey = os.Getenv("API_KEY")
 	return c
 }

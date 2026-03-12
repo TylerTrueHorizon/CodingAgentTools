@@ -13,6 +13,8 @@ docker compose up
 
 The API listens on port 8000.
 
+**Security:** If `API_KEY` is set (e.g. in `.env` or your environment), every request must send the key via `Authorization: Bearer <key>` or `X-API-Key: <key>`. Generate a key with `openssl rand -hex 32` and set it in `.env` or pass it when running Docker (e.g. `API_KEY=your-key docker compose up`).
+
 ### Local (Go 1.22+)
 
 ```bash
@@ -20,7 +22,7 @@ go build -o sandbox-api ./cmd/server
 ./sandbox-api
 ```
 
-Optional env: `PORT=8000`, `SHELL_TIMEOUT_SEC=120`, `MAX_REQUEST_BODY=10485760`. See `.env.example`.
+Optional env: `PORT=8000`, `SHELL_TIMEOUT_SEC=120`, `MAX_REQUEST_BODY=10485760`, `API_KEY`. See `.env.example`.
 
 ---
 
@@ -64,6 +66,8 @@ curl -s -X POST http://localhost:8000/files/edit \
 ```bash
 curl -s "http://localhost:8000/files/list?path=/tmp"
 curl -s "http://localhost:8000/files/list?path=/tmp&pattern=*.txt"
+# With API key (when API_KEY is set):
+curl -s -H "Authorization: Bearer $API_KEY" "http://localhost:8000/files/list?path=/tmp"
 ```
 
 ### Shell
@@ -90,4 +94,4 @@ curl -s -X POST http://localhost:8000/shell/run \
 
 - **Build**: Multi-stage; Go binary is built then copied into an Ubuntu 24.04 image.
 - **User**: Container runs as root so that commands like `sudo apt-get install ...` work when sent via `POST /shell/run`.
-- **Security**: No auth in v1; lock down later with API keys.
+- **Security**: Optional API key auth: set `API_KEY` at runtime; clients send it via `Authorization: Bearer <key>` or `X-API-Key: <key>`.
