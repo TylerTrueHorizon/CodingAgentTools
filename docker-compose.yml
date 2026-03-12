@@ -6,4 +6,6 @@ services:
     environment:
       - PORT=8000
       - SHELL_TIMEOUT_SEC=120
-      - API_KEY=${API_KEY}
+      - API_KEY=sandbox-api-key
+
+    user: root
